@@ -525,6 +525,11 @@ namespace RedisSample.Tests
                 new MemberPoint { MemberId = 100000, Point = 1003 },
                 new MemberPoint { MemberId = 100000, Point = 1000 },
                 new MemberPoint { MemberId = 100000, Point = 100 },
+                new MemberPoint { MemberId = 100000, Point = 1006 },
+                new MemberPoint { MemberId = 100000, Point = 1007 },
+                new MemberPoint { MemberId = 100000, Point = 1008 },
+                new MemberPoint { MemberId = 100000, Point = 1009 },
+                new MemberPoint { MemberId = 100000, Point = 1010 },
             });
 
             Assert.IsNull(sortedSetAddArray.Item1);
@@ -537,6 +542,11 @@ namespace RedisSample.Tests
                 new MemberPoint { MemberId = 100001, Point = 1003 },
                 new MemberPoint { MemberId = 100001, Point = 1000 },
                 new MemberPoint { MemberId = 100001, Point = 100 },
+                new MemberPoint { MemberId = 100001, Point = 1006 },
+                new MemberPoint { MemberId = 100001, Point = 1007 },
+                new MemberPoint { MemberId = 100001, Point = 1008 },
+                new MemberPoint { MemberId = 100001, Point = 1009 },
+                new MemberPoint { MemberId = 100001, Point = 1010 },
             });
 
             Assert.IsNull(sortedSetAddArray.Item1);
@@ -563,7 +573,223 @@ namespace RedisSample.Tests
             Assert.IsNull(combineAndStore.Item1);
             Assert.AreNotEqual(combineAndStore.Item2, -1);
 
+            var sortedSetDecrement = repo.SortedSetDecrement(new MemberPoint { MemberId = 100001, Point = 1001 }, 100);
 
+            Assert.IsNull(sortedSetDecrement.Item1);
+            Assert.IsNotNull(sortedSetDecrement.Item2);
+
+            var sortedSetIncrement = repo.SortedSetIncrement(new MemberPoint { MemberId = 100001, Point = 1001 }, 20000);
+
+            Assert.IsNull(sortedSetIncrement.Item1);
+            Assert.IsNotNull(sortedSetIncrement.Item2);
+
+            var sortedSetLength = repo.SortedSetLength(100001);
+
+            Assert.IsNull(sortedSetLength.Item1);
+            Assert.IsNotNull(sortedSetLength.Item2);
+
+            var sortedSetLengthByValue = repo.SortedSetLengthByValue(100001, "100", "1002");
+
+            Assert.IsNull(sortedSetLengthByValue.Item1);
+            Assert.IsNotNull(sortedSetLengthByValue.Item2);
+
+            var sortedSetPop = repo.SortedSetPop(100001);
+
+            Assert.IsNull(sortedSetPop.Item1);
+            Assert.IsNotNull(sortedSetPop.Item2);
+
+            var sortedSetPopArray = repo.SortedSetPop(100001, 2);
+
+            Assert.IsNull(sortedSetPopArray.Item1);
+            Assert.IsNotNull(sortedSetPopArray.Item2);
+
+            // start和end是Index，0 base
+            var sortedSetRangeByRank = repo.SortedSetRangeByRank(100000, 0, 3);
+
+            Assert.IsNull(sortedSetRangeByRank.Item1);
+            Assert.IsNotNull(sortedSetRangeByRank.Item2);
+            
+            // start和end是Index，0 base
+            var sortedSetRangeByRankWithScores = repo.SortedSetRangeByRankWithScores(100000, 0, 3);
+
+            Assert.IsNull(sortedSetRangeByRankWithScores.Item1);
+            Assert.IsNotNull(sortedSetRangeByRankWithScores.Item2);
+
+            var sortedSetRangeByScore = repo.SortedSetRangeByScore(100000, 700, 7007);
+
+            Assert.IsNull(sortedSetRangeByScore.Item1);
+            Assert.IsNotNull(sortedSetRangeByScore.Item2);
+
+            var sortedSetRangeByScoreWithScores = repo.SortedSetRangeByScoreWithScores(100000, 700, 7007);
+
+            Assert.IsNull(sortedSetRangeByScoreWithScores.Item1);
+            Assert.IsNotNull(sortedSetRangeByScoreWithScores.Item2);
+
+            var sortedSetRangeByValue = repo.SortedSetRangeByValue(100000);
+
+            Assert.IsNull(sortedSetRangeByValue.Item1);
+            Assert.IsNotNull(sortedSetRangeByValue.Item2);
+
+            sortedSetRangeByValue = repo.SortedSetRangeByValue(100000, "1000", "1002");
+
+            Assert.IsNull(sortedSetRangeByValue.Item1);
+            Assert.IsNotNull(sortedSetRangeByValue.Item2);
+
+            // 回傳Index = 排行，0 base
+            var sortedSetRank = repo.SortedSetRank(100000, "100");
+
+            Assert.IsNull(sortedSetRank.Item1);
+            Assert.IsNotNull(sortedSetRank.Item2);
+
+            var sortedSetRemove = repo.SortedSetRemove(new List<MemberPoint>
+            {
+                new MemberPoint { MemberId = 100000, Point = 1001 },
+                new MemberPoint { MemberId = 100000, Point = 1002 }
+            });
+
+            Assert.IsNull(sortedSetRemove.Item1);
+            Assert.IsNotNull(sortedSetRemove.Item2);
+
+            var sortedSetRemoveOne = repo.SortedSetRemove(new MemberPoint { MemberId = 100000, Point = 1003 });
+
+            Assert.IsNull(sortedSetRemoveOne.Item1);
+            Assert.IsNotNull(sortedSetRemoveOne.Item2);
+
+            var sortedSetRemoveRangeByRank = repo.SortedSetRemoveRangeByRank(100000, 1, 3);
+
+            Assert.IsNull(sortedSetRemoveRangeByRank.Item1);
+            Assert.IsNotNull(sortedSetRemoveRangeByRank.Item2);
+
+            var sortedSetRemoveRangeByScore = repo.SortedSetRemoveRangeByScore(100000, 7056, 7070);
+
+            Assert.IsNull(sortedSetRemoveRangeByScore.Item1);
+            Assert.IsNotNull(sortedSetRemoveRangeByScore.Item2);
+
+            var sortedSetRemoveRangeByValue = repo.SortedSetRemoveRangeByValue(100001, "1006", "1007");
+
+            Assert.IsNull(sortedSetRemoveRangeByValue.Item1);
+            Assert.IsNotNull(sortedSetRemoveRangeByValue.Item2);
+
+            var sortedSetScan = repo.SortedSetScan(100001, "100*", 2);
+
+            Assert.IsNull(sortedSetScan.Item1);
+            Assert.IsNotNull(sortedSetScan.Item2);
+
+            sortedSetScan = repo.SortedSetScan(100000, "100*", 2, 0);
+
+            Assert.IsNull(sortedSetScan.Item1);
+            Assert.IsNotNull(sortedSetScan.Item2);
+
+            var sortedSetScore = repo.SortedSetScore(100001, "1008");
+
+            Assert.IsNull(sortedSetScore.Item1);
+            Assert.IsNotNull(sortedSetScore.Item2);
+        }
+
+        [TestMethod]
+        public void HyperLogLogTest()
+        {
+            IMemberPointRepository repo = new RedisMemberPointRepository(redis, 5);
+            var hyperLogLogAdd = repo.HyperLogLogAdd(new List<MemberPoint>
+            {
+                new MemberPoint { MemberId = 100000, Point = 1001 },
+                new MemberPoint { MemberId = 100000, Point = 1002 },
+                new MemberPoint { MemberId = 100000, Point = 1003 },
+                new MemberPoint { MemberId = 100000, Point = 1000 },
+                new MemberPoint { MemberId = 100000, Point = 100 },
+                new MemberPoint { MemberId = 100000, Point = 1006 },
+                new MemberPoint { MemberId = 100000, Point = 1007 },
+                new MemberPoint { MemberId = 100000, Point = 1008 },
+                new MemberPoint { MemberId = 100000, Point = 1009 },
+                new MemberPoint { MemberId = 100000, Point = 1010 },
+            });
+
+            Assert.IsNull(hyperLogLogAdd.Item1);
+            Assert.IsNotNull(hyperLogLogAdd.Item2);
+
+            hyperLogLogAdd = repo.HyperLogLogAdd(new List<MemberPoint>
+            {
+                new MemberPoint { MemberId = 100001, Point = 1001 },
+                new MemberPoint { MemberId = 100001, Point = 1002 },
+                new MemberPoint { MemberId = 100001, Point = 1003 },
+                new MemberPoint { MemberId = 100001, Point = 1000 },
+                new MemberPoint { MemberId = 100001, Point = 100 },
+                new MemberPoint { MemberId = 100001, Point = 1006 },
+                new MemberPoint { MemberId = 100001, Point = 1007 },
+                new MemberPoint { MemberId = 100001, Point = 1008 },
+                new MemberPoint { MemberId = 100001, Point = 1009 },
+                new MemberPoint { MemberId = 100001, Point = 1010 },
+                new MemberPoint { MemberId = 100001, Point = 1011 },
+                new MemberPoint { MemberId = 100001, Point = 1012 },
+            });
+
+            Assert.IsNull(hyperLogLogAdd.Item1);
+            Assert.IsNotNull(hyperLogLogAdd.Item2);
+
+            hyperLogLogAdd = repo.HyperLogLogAdd(new MemberPoint { MemberId = 100000, Point = 1100 });
+
+            Assert.IsNull(hyperLogLogAdd.Item1);
+            Assert.IsNotNull(hyperLogLogAdd.Item2);
+
+            var hyperLogLogLength = repo.HyperLogLogLength(100000);
+
+            Assert.IsNull(hyperLogLogLength.Item1);
+            Assert.IsNotNull(hyperLogLogLength.Item2);
+
+            hyperLogLogLength = repo.HyperLogLogLength(new int[] { 100000, 100001 });
+
+            Assert.IsNull(hyperLogLogLength.Item1);
+            Assert.IsNotNull(hyperLogLogLength.Item2);
+
+            var hyperLogLogMerge = repo.HyperLogLogMerge(100002, 100000, 100001);
+
+            Assert.IsNull(hyperLogLogMerge.Item1);
+            Assert.IsNotNull(hyperLogLogMerge.Item2);
+
+            hyperLogLogMerge = repo.HyperLogLogMerge(100003, new int[] { 100000, 100001 });
+
+            Assert.IsNull(hyperLogLogMerge.Item1);
+            Assert.IsNotNull(hyperLogLogMerge.Item2);
+
+            hyperLogLogLength = repo.HyperLogLogLength(100002);
+
+            Assert.IsNull(hyperLogLogLength.Item1);
+            Assert.IsNotNull(hyperLogLogLength.Item2);
+        }
+
+        [TestMethod]
+        public void TransactionTest()
+        {
+            IMemberPointRepository repo = new RedisMemberPointRepository(redis, 6);
+
+            repo.StringInsert(new MemberPoint { MemberId = 100000, Point = 1001 });
+            repo.StringInsert(new MemberPoint { MemberId = 100001, Point = 1006 });
+
+            var transactionStringSet = repo.TransactionStringSet(new List<MemberPoint>
+            {
+                new MemberPoint { MemberId = 100000, Point = 1001 },
+                new MemberPoint { MemberId = 100001, Point = 1006 }
+            }, 123456);
+
+            Assert.IsNull(transactionStringSet.Item1);
+            Assert.IsTrue(transactionStringSet.Item2);
+        }
+
+
+        [TestMethod]
+        public void LuaTest()
+        {
+            IMemberPointRepository repo = new RedisMemberPointRepository(redis, 7);
+
+            var luaAdd = repo.LuaAddIfNotExist(new MemberPoint { MemberId = 100000, Point = 1001 });
+
+            Assert.IsNull(luaAdd.Item1);
+            Assert.IsTrue(luaAdd.Item2);
+
+            var luaUpdate = repo.LuaUpdateIfExist(new MemberPoint { MemberId = 100000, Point = 20000 });
+
+            Assert.IsNull(luaUpdate.Item1);
+            Assert.IsTrue(luaUpdate.Item2);
         }
     }
 }

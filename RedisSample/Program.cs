@@ -1,4 +1,6 @@
 ﻿using RedisSample.App_Start;
+using RedisSample.Applibs;
+using RedisSample.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,14 @@ namespace RedisSample
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             AutofacConfig.RegisterContainer();
+
+            var channels = ConfigHelper.RedisSubChannels.Split(',');
+
+            var consumer = new RedisConsumer(
+                channels,
+                new PubSubDispatcher<RedisEventStream>());
+            consumer.Start();
+
             Application.Run(new Form1());
         }
     }

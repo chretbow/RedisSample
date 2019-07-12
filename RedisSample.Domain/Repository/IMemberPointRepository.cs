@@ -25,9 +25,6 @@
         Tuple<Exception, MemberPoint> StringFind(int member);
 
         Tuple<Exception, IEnumerable<MemberPoint>> StringGet(int[] members);
-
-        Tuple<Exception, IEnumerable<MemberPoint>> StringBatchGet(int[] members);
-
         //*********************************************************************************//
         Tuple<Exception, bool> HashInsert(MemberPoint memberPoint);
 
@@ -135,8 +132,69 @@
 
         Tuple<Exception, long> SortedSetCombineAndStoreUnion(IEnumerable<int> members);
 
-        Tuple<Exception, MemberPoint> SortedSetDecrement(MemberPoint memberPoint);
+        Tuple<Exception, MemberPoint> SortedSetDecrement(MemberPoint memberPoint, long changePoint);
 
-        Tuple<Exception, MemberPoint> SortedSetIncrement(MemberPoint memberPoint);
+        Tuple<Exception, MemberPoint> SortedSetIncrement(MemberPoint memberPoint, long changePoint);
+
+        Tuple<Exception, long> SortedSetLength(int memberId);
+
+        Tuple<Exception, long> SortedSetLengthByValue(int memberId, string start, string end);
+
+        Tuple<Exception, MemberPoint> SortedSetPop(int memberId);
+
+        Tuple<Exception, IEnumerable<MemberPoint>> SortedSetPop(int memberId, long count);
+
+        Tuple<Exception, IEnumerable<string>> SortedSetRangeByRank(int memberId, long start, long stop);
+
+        Tuple<Exception, IEnumerable<MemberPoint>> SortedSetRangeByRankWithScores(int memberId, long start, long stop);
+
+        Tuple<Exception, IEnumerable<string>> SortedSetRangeByScore(int memberId, double start, double stop);
+
+        Tuple<Exception, IEnumerable<MemberPoint>> SortedSetRangeByScoreWithScores(int memberId, double start, double stop);
+
+        Tuple<Exception, IEnumerable<string>> SortedSetRangeByValue(int memberId);
+
+        Tuple<Exception, IEnumerable<string>> SortedSetRangeByValue(int memberId, string start, string stop);
+
+        Tuple<Exception, long> SortedSetRank(int memberId, string value);
+
+        Tuple<Exception, long> SortedSetRemove(IEnumerable<MemberPoint> memberPoints);
+
+        Tuple<Exception, bool> SortedSetRemove(MemberPoint memberPoints);
+
+        Tuple<Exception, long> SortedSetRemoveRangeByRank(int memberId, long start, long stop);
+
+        Tuple<Exception, long> SortedSetRemoveRangeByScore(int memberId, double start, double stop);
+
+        Tuple<Exception, long> SortedSetRemoveRangeByValue(int memberId, string start, string stop);
+
+        Tuple<Exception, IEnumerable<MemberPoint>> SortedSetScan(int memberId, string pattern, int pageSize);
+
+        Tuple<Exception, IEnumerable<MemberPoint>> SortedSetScan(int memberId, string pattern, int pageSize, int pageOffset);
+
+        Tuple<Exception, double> SortedSetScore(int memberId, string value);
+
+        //*********************************************************************************//
+        Tuple<Exception, bool> HyperLogLogAdd(IEnumerable<MemberPoint> memberPoints);
+
+        Tuple<Exception, bool> HyperLogLogAdd(MemberPoint memberPoint);
+
+        Tuple<Exception, long> HyperLogLogLength(int memberId);
+
+        Tuple<Exception, long> HyperLogLogLength(IEnumerable<int> members);
+
+        Tuple<Exception, bool> HyperLogLogMerge(int destinationMember, int firstMember, int secondMember);
+
+        Tuple<Exception, bool> HyperLogLogMerge(int destinationMember, IEnumerable<int> members);
+
+        //*********************************************************************************//
+        Tuple<Exception, bool> TransactionStringSet(IEnumerable<MemberPoint> memberPoints, long newPoint);
+
+        //*********************************************************************************//
+        Tuple<Exception, IEnumerable<MemberPoint>> StringBatchGet(int[] members);
+        //*********************************************************************************//
+        Tuple<Exception, bool> LuaAddIfNotExist(MemberPoint memberPoint);
+
+        Tuple<Exception, bool> LuaUpdateIfExist(MemberPoint memberPoint);
     }
 }

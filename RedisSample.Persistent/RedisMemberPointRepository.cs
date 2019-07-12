@@ -1298,14 +1298,590 @@ namespace RedisSample.Persistent
             }
         }
 
-        public Tuple<Exception, MemberPoint> SortedSetDecrement(MemberPoint memberPoint)
+        public Tuple<Exception, MemberPoint> SortedSetDecrement(MemberPoint memberPoint, long changePoint)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var value = redis.SortedSetDecrement(GenerateKey(memberPoint.MemberId), nameof(MemberPoint.Point) + memberPoint.Point, changePoint);
+                    MemberPoint memberPointResult = new MemberPoint
+                    {
+                        MemberId = memberPoint.MemberId,
+                        Point = Convert.ToInt64(value)
+                    };
+                    return Tuple.Create<Exception, MemberPoint>(null, memberPointResult);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, MemberPoint>(ex, null);
+            }
         }
 
-        public Tuple<Exception, MemberPoint> SortedSetIncrement(MemberPoint memberPoint)
+        public Tuple<Exception, MemberPoint> SortedSetIncrement(MemberPoint memberPoint, long changePoint)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var value = redis.SortedSetIncrement(GenerateKey(memberPoint.MemberId), nameof(MemberPoint.Point) + memberPoint.Point, changePoint);
+                    MemberPoint memberPointResult = new MemberPoint
+                    {
+                        MemberId = memberPoint.MemberId,
+                        Point = Convert.ToInt64(value)
+                    };
+                    return Tuple.Create<Exception, MemberPoint>(null, memberPointResult);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, MemberPoint>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, long> SortedSetLength(int memberId)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var value = redis.SortedSetLength(GenerateKey(memberId));
+                    return Tuple.Create<Exception, long>(null, value);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, long> SortedSetLengthByValue(int memberId, string start, string end)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var value = redis.SortedSetLengthByValue(GenerateKey(memberId), nameof(MemberPoint.Point) + start, nameof(MemberPoint.Point) + end);
+                    return Tuple.Create<Exception, long>(null, value);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, MemberPoint> SortedSetPop(int memberId)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var entry = redis.SortedSetPop(GenerateKey(memberId));
+
+                    MemberPoint memberPointResult = null;
+                    if (entry.HasValue)
+                    {
+                        memberPointResult = new MemberPoint
+                        {
+                            MemberId = memberId,
+                            Point = Convert.ToInt64(entry.Value.Score)
+                        };
+                    }
+
+                    return Tuple.Create<Exception, MemberPoint>(null, memberPointResult);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, MemberPoint>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<MemberPoint>> SortedSetPop(int memberId, long count)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetPop(GenerateKey(memberId), count);
+                    var memberPoints = new List<MemberPoint>();
+                    foreach (var value in values)
+                    {
+                        memberPoints.Add(new MemberPoint
+                        {
+                            MemberId = memberId,
+                            Point = Convert.ToInt64(value.Score)
+                        });
+                    }
+                    return Tuple.Create<Exception, IEnumerable<MemberPoint>>(null, memberPoints);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<MemberPoint>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<string>> SortedSetRangeByRank(int memberId, long start, long stop)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetRangeByRank(GenerateKey(memberId), start, stop);
+                    return Tuple.Create<Exception, IEnumerable<string>>(null, values.Select(x => x.ToString()).ToList());
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<string>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<MemberPoint>> SortedSetRangeByRankWithScores(int memberId, long start, long stop)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetRangeByRankWithScores(GenerateKey(memberId), start, stop);
+                    var memberPoints = new List<MemberPoint>();
+                    foreach (var value in values)
+                    {
+                        memberPoints.Add(new MemberPoint
+                        {
+                            MemberId = memberId,
+                            Point = Convert.ToInt64(value.Score)
+                        });
+                    }
+                    return Tuple.Create<Exception, IEnumerable<MemberPoint>>(null, memberPoints);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<MemberPoint>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<string>> SortedSetRangeByScore(int memberId, double start, double stop)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetRangeByScore(GenerateKey(memberId), start, stop);
+                    return Tuple.Create<Exception, IEnumerable<string>>(null, values.Select(x => x.ToString()).ToList());
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<string>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<MemberPoint>> SortedSetRangeByScoreWithScores(int memberId, double start, double stop)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetRangeByScoreWithScores(GenerateKey(memberId), start, stop);
+                    var memberPoints = new List<MemberPoint>();
+                    foreach (var value in values)
+                    {
+                        memberPoints.Add(new MemberPoint
+                        {
+                            MemberId = memberId,
+                            Point = Convert.ToInt64(value.Score)
+                        });
+                    }
+                    return Tuple.Create<Exception, IEnumerable<MemberPoint>>(null, memberPoints);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<MemberPoint>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<string>> SortedSetRangeByValue(int memberId)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetRangeByValue(GenerateKey(memberId));
+                    return Tuple.Create<Exception, IEnumerable<string>>(null, values.Select(x => x.ToString()).ToList());
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<string>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<string>> SortedSetRangeByValue(int memberId, string start, string stop)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetRangeByValue(GenerateKey(memberId), nameof(MemberPoint.Point) + start, nameof(MemberPoint.Point) + stop);
+                    return Tuple.Create<Exception, IEnumerable<string>>(null, values.Select(x => x.ToString()).ToList());
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<string>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, long> SortedSetRank(int memberId, string value)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var rank = redis.SortedSetRank(GenerateKey(memberId), nameof(MemberPoint.Point) + value);
+                    return Tuple.Create<Exception, long>(null, rank ?? -1);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, long> SortedSetRemove(IEnumerable<MemberPoint> memberPoints)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var count = redis.SortedSetRemove(GenerateKey(memberPoints.Select(x => x.MemberId).FirstOrDefault()), memberPoints.Select(x => (RedisValue)(nameof(MemberPoint.Point) + x.Point)).ToArray());
+                    return Tuple.Create<Exception, long>(null, count);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, bool> SortedSetRemove(MemberPoint memberPoints)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var flag = redis.SortedSetRemove(GenerateKey(memberPoints.MemberId), nameof(MemberPoint.Point) + memberPoints.Point);
+                    return Tuple.Create<Exception, bool>(null, flag);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
+        }
+
+        public Tuple<Exception, long> SortedSetRemoveRangeByRank(int memberId, long start, long stop)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var count = redis.SortedSetRemoveRangeByRank(GenerateKey(memberId), start, stop);
+                    return Tuple.Create<Exception, long>(null, count);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, long> SortedSetRemoveRangeByScore(int memberId, double start, double stop)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var count = redis.SortedSetRemoveRangeByScore(GenerateKey(memberId), start, stop);
+                    return Tuple.Create<Exception, long>(null, count);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, long> SortedSetRemoveRangeByValue(int memberId, string start, string stop)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var count = redis.SortedSetRemoveRangeByValue(GenerateKey(memberId), nameof(MemberPoint.Point) + start, nameof(MemberPoint.Point) + stop);
+                    return Tuple.Create<Exception, long>(null, count);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<MemberPoint>> SortedSetScan(int memberId, string pattern, int pageSize)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetScan(GenerateKey(memberId), nameof(MemberPoint.Point) + pattern, pageSize);
+                    var memberPoints = new List<MemberPoint>();
+                    foreach (var value in values)
+                    {
+                        memberPoints.Add(new MemberPoint
+                        {
+                            MemberId = memberId,
+                            Point = Convert.ToInt64(value.Score)
+                        });
+                    }
+                    return Tuple.Create<Exception, IEnumerable<MemberPoint>>(null, memberPoints);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<MemberPoint>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, IEnumerable<MemberPoint>> SortedSetScan(int memberId, string pattern, int pageSize, int pageOffset)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = redis.SortedSetScan(GenerateKey(memberId), nameof(MemberPoint.Point) + pattern, pageSize, pageOffset: pageOffset);
+                    var memberPoints = new List<MemberPoint>();
+                    foreach (var value in values)
+                    {
+                        memberPoints.Add(new MemberPoint
+                        {
+                            MemberId = memberId,
+                            Point = Convert.ToInt64(value.Score)
+                        });
+                    }
+                    return Tuple.Create<Exception, IEnumerable<MemberPoint>>(null, memberPoints);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, IEnumerable<MemberPoint>>(ex, null);
+            }
+        }
+
+        public Tuple<Exception, double> SortedSetScore(int memberId, string value)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var score = redis.SortedSetScore(GenerateKey(memberId), nameof(MemberPoint.Point) + value);
+                    return Tuple.Create<Exception, double>(null, score ?? -1);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, double>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, bool> HyperLogLogAdd(IEnumerable<MemberPoint> memberPoints)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var flag = redis.HyperLogLogAdd(GenerateKey(memberPoints.Select(x => x.MemberId).FirstOrDefault()), memberPoints.Select(x => (RedisValue)x.Point).ToArray());
+                    return Tuple.Create<Exception, bool>(null, flag);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
+        }
+
+        public Tuple<Exception, bool> HyperLogLogAdd(MemberPoint memberPoint)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var flag = redis.HyperLogLogAdd(GenerateKey(memberPoint.MemberId), memberPoint.Point);
+                    return Tuple.Create<Exception, bool>(null, flag);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
+        }
+
+        public Tuple<Exception, long> HyperLogLogLength(int memberId)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var length = redis.HyperLogLogLength(GenerateKey(memberId));
+                    return Tuple.Create<Exception, long>(null, length);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, long> HyperLogLogLength(IEnumerable<int> members)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var length = redis.HyperLogLogLength(GenerateKeys(members));
+                    return Tuple.Create<Exception, long>(null, length);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, long>(ex, -1);
+            }
+        }
+
+        public Tuple<Exception, bool> HyperLogLogMerge(int destinationMember, int firstMember, int secondMember)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    redis.HyperLogLogMerge(GenerateKey(destinationMember), GenerateKey(firstMember), GenerateKey(secondMember));
+                    return Tuple.Create<Exception, bool>(null, true);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
+        }
+
+        public Tuple<Exception, bool> HyperLogLogMerge(int destinationMember, IEnumerable<int> members)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    redis.HyperLogLogMerge(GenerateKey(destinationMember), GenerateKeys(members));
+                    return Tuple.Create<Exception, bool>(null, true);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
+        }
+
+        public Tuple<Exception, bool> TransactionStringSet(IEnumerable<MemberPoint> oldPoints, long newPoint)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var tran = redis.CreateTransaction();
+
+                    foreach(var member in oldPoints)
+                    {
+                        //判斷有值才改
+                        tran.AddCondition(Condition.StringEqual(GenerateKey(member.MemberId), member.Point)); // 樂觀鎖 
+                        tran.StringSetAsync(GenerateKey(member.MemberId), newPoint);
+                    }
+
+                    bool committed = tran.Execute();
+                    return Tuple.Create<Exception, bool>(null, committed);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
+        }
+
+        public Tuple<Exception, bool> LuaAddIfNotExist(MemberPoint memberPoint)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = new RedisValue[]
+                    {
+                        memberPoint.MemberId,
+                        memberPoint.Point
+                    };
+
+                    string script =
+                    @"
+                    if tonumber(redis.call('EXISTS', KEYS[1])) == 1  then return 0 end
+                    redis.call('HMSET', KEYS[1]
+                    , 'MemberId', ARGV[1]
+                    , 'Point', ARGV[2])
+                    redis.call('EXPIRE', KEYS[1], 3600)
+                    return 1";
+
+                    //// redis.call('EXPIRE', KEYS[1], 3600) 3600 is TTL
+                    var result = (bool)redis.ScriptEvaluate(script, GenerateKeys(new List<int> { memberPoint.MemberId }), values);
+
+                    return Tuple.Create<Exception, bool>(null, result);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
+        }
+
+        public Tuple<Exception, bool> LuaUpdateIfExist(MemberPoint memberPoint)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    var values = new RedisValue[]
+                    {
+                        memberPoint.MemberId,
+                        memberPoint.Point
+                    };
+
+                    string script =
+                    @"
+                    if tonumber(redis.call('EXISTS', KEYS[1])) == 0  then return 0 end
+                    redis.call('HINCRBY', KEYS[1]
+                    , 'Point', ARGV[2])
+                    return 1";
+
+                    var result = (bool)redis.ScriptEvaluate(script, GenerateKeys(new List<int> { memberPoint.MemberId }), values);
+
+                    return Tuple.Create<Exception, bool>(null, result);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
         }
     }
 }

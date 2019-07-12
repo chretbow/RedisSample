@@ -51,6 +51,9 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Pipelines.Sockets.Unofficial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42ea0a778e13fbe2, processorArchitecture=MSIL">
       <HintPath>..\packages\Pipelines.Sockets.Unofficial.2.0.22\lib\net461\Pipelines.Sockets.Unofficial.dll</HintPath>
     </Reference>
@@ -103,6 +106,10 @@
   <ItemGroup>
     <Compile Include="Applibs\ConfigHelper.cs" />
     <Compile Include="Applibs\NoSqlService.cs" />
+    <Compile Include="Applibs\PubSubDispatcher.cs" />
+    <Compile Include="Applibs\RedisConsumer.cs" />
+    <Compile Include="Applibs\RedisProducer.cs" />
+    <Compile Include="Applibs\TimeStampHelper.cs" />
     <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -110,6 +117,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Handler\PressureTestContentEventHandler.cs" />
+    <Compile Include="Interface\IPubSubHandler.cs" />
+    <Compile Include="Model\EventStream.cs" />
+    <Compile Include="Interface\IPubSubDispatcher.cs" />
+    <Compile Include="Model\PressureTestContentEvent.cs" />
+    <Compile Include="Model\RedisEventStream.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
