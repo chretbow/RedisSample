@@ -196,5 +196,7 @@
         Tuple<Exception, bool> LuaAddIfNotExist(MemberPoint memberPoint);
 
         Tuple<Exception, bool> LuaUpdateIfExist(MemberPoint memberPoint);
+        //*********************************************************************************//
+        Tuple<Exception, bool> LockStringGet(int member);
     }
 }

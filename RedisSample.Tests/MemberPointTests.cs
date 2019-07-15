@@ -791,5 +791,16 @@ namespace RedisSample.Tests
             Assert.IsNull(luaUpdate.Item1);
             Assert.IsTrue(luaUpdate.Item2);
         }
+
+        [TestMethod]
+        public void LockTest()
+        {
+            IMemberPointRepository repo = new RedisMemberPointRepository(redis, 0);
+
+            var lockGet = repo.LockStringGet(100002);
+
+            Assert.IsNull(lockGet.Item1);
+            Assert.IsTrue(lockGet.Item2);
+        }
     }
 }

@@ -108,6 +108,7 @@
     <Compile Include="Applibs\NoSqlService.cs" />
     <Compile Include="Applibs\PubSubDispatcher.cs" />
     <Compile Include="Applibs\RedisConsumer.cs" />
+    <Compile Include="Applibs\RedisLockHelper.cs" />
     <Compile Include="Applibs\RedisProducer.cs" />
     <Compile Include="Applibs\TimeStampHelper.cs" />
     <Compile Include="App_Start\AutofacConfig.cs" />

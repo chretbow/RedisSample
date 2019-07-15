@@ -1883,5 +1883,35 @@ namespace RedisSample.Persistent
                 return Tuple.Create<Exception, bool>(ex, false);
             }
         }
+
+        public Tuple<Exception, bool> LockStringGet(int member)
+        {
+            try
+            {
+                return UseConnection(redis =>
+                {
+                    //lock_key表示的是redis數據庫中該鎖的名稱，不可重複。
+                    //token用來標識誰擁有該鎖並用來釋放鎖。
+                    //TimeSpan表示該鎖的有效時間。10秒後自動釋放，避免死鎖。
+                    if (redis.LockTake(nameof(MemberPoint.MemberId), GenerateKey(member), TimeSpan.FromSeconds(10)))
+                    {
+                        try
+                        {
+                            var result = redis.StringGet(GenerateKey(member));
+                        }
+                        finally
+                        {
+                            redis.LockRelease(nameof(MemberPoint.MemberId), GenerateKey(member)); // 釋放鎖
+                        }
+                    }
+
+                    return Tuple.Create<Exception, bool>(null, true);
+                });
+            }
+            catch (Exception ex)
+            {
+                return Tuple.Create<Exception, bool>(ex, false);
+            }
+        }
     }
 }
